@@ -35,12 +35,14 @@ func main() {
 		if err != nil {
 			fail("bad format 'from' flag.")
 		}
+		cfg.DateFrom = asFromDate(cfg.DateFrom)
 	}
 	if len(*toFlag) > 0 {
 		cfg.DateTo, err = time.ParseInLocation("2006-01-02", *toFlag, time.Local)
 		if err != nil {
 			fail("bad format 'to' flag.")
 		}
+		cfg.DateTo = asToDate(cfg.DateTo)
 	}
 
 	tsSvc := svc.NewTimesheetSvc(cfg, svc.NewServices(cfg))
@@ -55,6 +57,8 @@ func main() {
 func monthOffset(o time.Time, n int) (time.Time, time.Time) {
 	dateFrom := time.Date(o.Year(), o.Month(), 1, 0, 0, 0, 0, o.Location()).AddDate(0, -n, 0)
 	dateTo := time.Date(dateFrom.Year(), dateFrom.Month(), daysInMonth(dateFrom.Year(), dateFrom.Month()), 0, 0, 0, 0, o.Location())
+	dateFrom = asFromDate(dateFrom)
+	dateTo = asToDate(dateTo)
 	return dateFrom, dateTo
 }
 
@@ -64,6 +68,14 @@ func monthOffset(o time.Time, n int) (time.Time, time.Time) {
 // the previous month.
 func daysInMonth(year int, month time.Month) int {
 	return time.Date(year, month+1, 0, 0, 0, 0, 0, time.UTC).Day()
+}
+
+func asFromDate(d time.Time) time.Time {
+	return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
+}
+
+func asToDate(d time.Time) time.Time {
+	return time.Date(d.Year(), d.Month(), d.Day(), 23, 59, 59, 0, d.Location())
 }
 
 func fail(msg string) {
