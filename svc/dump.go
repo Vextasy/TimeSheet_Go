@@ -56,7 +56,7 @@ func (svc dumpSvc) Projects(projects []*domain.Project) []string {
 	for _, proj := range projects {
 		output = append(output, fmt.Sprintf("%s = %s", proj.Name, fmtLongTime(Time(proj.Tasks))))
 
-		startdays := mondays(svc.cfg.DateFrom)
+		startdays := mondays(svc.cfg.DateFrom, svc.cfg.DateTo)
 		for _, d := range startdays {
 			var times []time.Duration
 			var stimes []string // formatted string times.
@@ -148,39 +148,40 @@ func fmtTime(ts time.Duration) string {
 	}
 }
 
-// Return the sequence of mondays that contain days from the same month as `from'.
-func mondays(from time.Time) []time.Time {
+// Return the sequence of mondays for weeks that contain days in the range of 'from' to 'to'.
+func mondays(from time.Time, to time.Time) []time.Time {
 	dow := from.Weekday() // Sunday = 0
 	dec := (int(dow) + 6) % 7
 	mon1 := from.AddDate(0, 0, -dec)
 
 	var mondays []time.Time
-	for w := 0; w <= 5; w++ {
+	for w := 0; ; w++ {
 		mon := mon1.AddDate(0, 0, w*7)
-		if mon.Month() != from.Month()+1 {
-			mondays = append(mondays, mon)
+		if mon.After(to) {
+			break
 		}
+		mondays = append(mondays, mon)
 	}
 
 	return mondays
 }
 
-// Return the sequence of saturdays that contain days from the same month as `from'
-func saturdays(from time.Time) []time.Time {
-	dow := from.Weekday()
+// Return the sequence of saturdays for weeks that contain days in the range of 'from' to 'to'.
+func saturdays(from time.Time, to time.Time) []time.Time {
+	dow := from.Weekday() // Sunday = 0
 	dec := int((dow + 1) % 7)
 	sat1 := from.AddDate(0, 0, -dec)
 
-	var result []time.Time
-
-	for w := 0; w <= 5; w++ {
+	var saturdays []time.Time
+	for w := 0; ; w++ {
 		sat := sat1.AddDate(0, 0, w*7)
-		if sat.Month() != from.Month()+1 {
-			result = append(result, sat)
+		if sat.After(to) {
+			break
 		}
+		saturdays = append(saturdays, sat)
 	}
 
-	return result
+	return saturdays
 }
 
 func weekdays(monday time.Time) []time.Time {
