@@ -64,7 +64,7 @@ func (svc graphSvc) Read(userName string, fromDate time.Time, toDate time.Time) 
 		return []domain.Task{}, nil
 	}
 
-	// Got the user. Now get the tasks.
+	// Got the user. Now get the tasks for that user.
 	// Microsoft graph stores datetimes in UTC. So convert our range to UTC before filtering.
 	// TODO: This doesn't actually change the dates it just changes the associated time zone.
 	start := fromDate.UTC().Format("2006-01-02T15:04:05.0000000")
@@ -73,6 +73,7 @@ func (svc graphSvc) Read(userName string, fromDate time.Time, toDate time.Time) 
 	query := users.ItemCalendarEventsRequestBuilderGetQueryParameters{
 		Select: []string{"subject", "start", "end"},
 		Filter: &filter,
+		Top:    &[]int32{999}[0],
 	}
 	options := users.ItemCalendarEventsRequestBuilderGetRequestConfiguration{
 		QueryParameters: &query,
