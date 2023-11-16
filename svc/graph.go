@@ -66,7 +66,6 @@ func (svc graphSvc) Read(userName string, fromDate time.Time, toDate time.Time) 
 
 	// Got the user. Now get the tasks for that user.
 	// Microsoft graph stores datetimes in UTC. So convert our range to UTC before filtering.
-	// TODO: This doesn't actually change the dates it just changes the associated time zone.
 	start := fromDate.UTC().Format("2006-01-02T15:04:05.0000000")
 	end := toDate.UTC().Format("2006-01-02T15:04:05.0000000")
 	filter := fmt.Sprintf("start/DateTime ge '%s' and start/DateTime le '%s' and IsAllDay eq false", start, end)
@@ -101,8 +100,6 @@ func (svc graphSvc) Read(userName string, fromDate time.Time, toDate time.Time) 
 		proj := matches[1]
 		group := matches[2]
 		desc := matches[3]
-		// Convert back from UTC to local time.
-		// TODO: This doesn't actually change the dates it just changes the associated time zone.
 		_start := ev.GetStart()
 		_end := ev.GetEnd()
 		start, err := time.Parse("2006-01-02T15:04:05.0000000", *_start.GetDateTime())
@@ -113,6 +110,7 @@ func (svc graphSvc) Read(userName string, fromDate time.Time, toDate time.Time) 
 		if err != nil {
 			return []domain.Task{}, fmt.Errorf("failed to parse end time: %v", err)
 		}
+		// Convert back from UTC to local time.
 		start = start.Local()
 		end = end.Local()
 		duration := end.Sub(start)
