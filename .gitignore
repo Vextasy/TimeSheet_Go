@@ -8,6 +8,9 @@
 *.so
 *.dylib
 
+# Result of running go build ./cmd/main.go
+main
+
 # .envrc contains private information.
 .envrc
 
