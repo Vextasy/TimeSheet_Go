@@ -24,13 +24,11 @@ type DumpSvc interface {
 	Projects(projects []*Project) []string
 }
 
-// Credentials required by the TokenAcquirerFactory.
-//   - "Instance": "https://login.microsoftonline.com/",
+// Credentials required to construct an identity provider.
 //   - "TenantId": "<the azure tenant id>",
 //   - "ClientId": "<the app registration application (client) id>",
 //   - "ClientSecret": "<the azure client secret>"
 type Auth struct {
-	Instance     string
 	TenantId     string
 	ClientId     string
 	ClientSecret string

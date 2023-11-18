@@ -14,7 +14,6 @@ func main() {
 	env := envrc.NewEnvRc(".")
 	cfg := svc.TsConfig{}
 
-	cfg.Auth.Instance = env.Get("Instance")
 	cfg.Auth.TenantId = env.Get("TenantId")
 	cfg.Auth.ClientId = env.Get("ClientId")
 	cfg.Auth.ClientSecret = env.Get("ClientSecret")

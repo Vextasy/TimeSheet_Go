@@ -131,14 +131,11 @@ Before we can make use of the Microsoft Graph service we need to prove to it tha
 Microsoft have made this process much easier than it used to be by providing the Microsoft.Identity.Web.TokenAcquirerFactory class.
 The TokenAcquirerFactory class will manage the acquisition of Access (and other) tokens required for communication with Microsoft Graph.
 
-There are four pieces of information that we need to provide:
+There are three pieces of information that we need to provide:
 
-* **The Azure Instance**: In our case "https://login.microsoftonline.com". This will be different if you are allowing access to a wider audience. But if restricting it to just members of our Microsoft Entra tenant then we need to use this value.
 * **The Azure Tenant ID**: This can be found from the app registration overview page as the Directory (tenant) ID.
 *  **The App Registration Client ID**: Found on the app registration overview page.
 * **The Client Secret**: The shared secret that we created on the app registration "Clients & Certificates" blade and which you saved to a safe place.
-
-This information can be used with the TokenAcquirerFactory class to create a Microsoft Graph client with which we can query Microsoft Graph.
 
 TimeSheet expects to find an ".envrc" file in the current directory that looks something like this:
 ```
